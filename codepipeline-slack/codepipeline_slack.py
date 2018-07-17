@@ -4,7 +4,7 @@ import datetime
 import time
 import os
 
-icon_url = "https://github.com/CallMeLaNN/cloudformation-templates/raw/master/codepipeline-slack/codepipeline-service-icon.png"
+icon_url = "https://raw.githubusercontent.com/CallMeLaNN/cloudformation-templates/master/codepipeline-slack/codepipeline-service-icon.png"
 
 def build_payload(slack_channel, slack_username, region, pipeline, execution_id, state, deploy_time):
   global icon_url
