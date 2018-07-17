@@ -34,6 +34,10 @@ You have to package the template first to upload the soruce into S3. Create S3 b
 3. `sam package --template-file template.yaml --output-template-file packaged.yaml --s3-bucket <S3-BUCKET>`
 4. `sam deploy --template-file packaged.yaml --capabilities CAPABILITY_IAM --stack-name <STACK-NAME> --tags TAG-NAME=TAG-VALUE --parameter-overrides PARAM_NAME1=PARAM-VALUE1 PARAM_NAME2=PARAM-VALUE2`
 
+## TODO
+
+1. [Encrypt environment variable with AWS KMS](https://github.com/awslabs/serverless-application-model/blob/master/examples/apps/cloudwatch-alarm-to-slack-python3/index.js)
+
 ## References
 
 * [Serverless Application Model](https://github.com/awslabs/serverless-application-model)
