@@ -1,0 +1,18 @@
+{
+  "version": "0",
+  "id": "a10704a7-eec7-f457-243c-a204622da91c",
+  "detail-type": "CodePipeline Pipeline Execution State Change",
+  "source": "aws.codepipeline",
+  "account": "012345678910",
+  "time": "2018-07-14T01:52:18Z",
+  "region": "ap-southeast-1",
+  "resources": [
+    "arn:aws:codepipeline:ap-southeast-1:012345678910:NibJavaAPITest-Pipe"
+  ],
+  "detail": {
+    "pipeline": "NibJavaAPITest-Pipe",
+    "execution-id": "c2cd465e-5653-41cb-a8f7-086b33614566",
+    "state": "SUCCEEDED",
+    "version": 2.0
+  }
+}

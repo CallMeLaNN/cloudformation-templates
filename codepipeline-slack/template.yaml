@@ -1,0 +1,81 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  Notify CodePipeline Pipeline Execution State Change on Slack.
+  Create CloudWatch to trigger Pipeline Execution State Change and
+  a Lambda function to call Slack webhook
+
+Parameters:
+  PipelineNames:
+    Type: CommaDelimitedList
+    Description: The list of pipeline name to listen for the Pipeline Execution State Change event
+  SlackWebhookUrl:
+    Type: String
+    Description: "Slack webhook URL"
+  SlackChannel:
+    Type: String
+    Default: AWS::NoValue
+    Description: "Slack Channel"
+  SlackUsername:
+    Type: String
+    Default: "AWS CodePipeline"
+    Description: "Slack username"
+
+# More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
+Globals:
+  Function:
+    Timeout: 10
+
+Resources:
+
+  CodePipelineSlackFunction:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Properties:
+      Description: A Lambda function to call Slack webhook from Pipeline Execution State Change event
+      CodeUri: build/
+      Handler: codepipeline_slack.lambda_handler
+      Runtime: python3.6
+      Environment: # More info about Env Vars: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#environment-object
+        Variables:
+          SLACK_WEBHOOK_URL: !Ref SlackWebhookUrl
+          SLACK_CHANNEL: !Ref SlackChannel
+          SLACK_USERNAME: !Ref SlackUsername
+      Events:
+        CodePipelineStageChanged:
+          Type: CloudWatchEvent
+          Properties:
+            Pattern:
+              source:
+                - aws.codepipeline
+              detail-type:
+                - "CodePipeline Pipeline Execution State Change"
+              detail:
+                state:
+                  - STARTED
+                  - CANCELED
+                  - RESUMED
+                  - SUPERSEDED
+                  - SUCCEEDED
+                  - FAILED
+                pipeline: !Ref PipelineNames
+
+  CodePipelineSlackFunctionLogGroup:
+    Type: AWS::Logs::LogGroup
+    DependsOn: CodePipelineSlackFunction
+    Properties:
+      RetentionInDays: 5
+      LogGroupName: !Join ["", ["/aws/lambda/", !Ref CodePipelineSlackFunction]]
+
+Outputs:
+
+  Function:
+    Description: "CodePipeline Slack Lambda Function ARN"
+    Value: !GetAtt CodePipelineSlackFunction.Arn
+
+  FunctionIamRole:
+    Description: "Implicit IAM Role created for CodePipeline Slack function"
+    Value: !GetAtt CodePipelineSlackFunctionRole.Arn
+
+  FunctionLogGroup:
+    Description: "Log Group created for CodePipeline Slack function"
+    Value: !GetAtt CodePipelineSlackFunctionLogGroup.Arn

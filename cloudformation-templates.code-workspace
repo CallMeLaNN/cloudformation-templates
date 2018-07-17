@@ -1,0 +1,18 @@
+{
+	"folders": [
+		{
+			"path": "."
+		}
+	],
+	"settings": {
+		"yaml.customTags": [
+			"!Ref",
+			"!GetAtt",
+			"!Join"
+		],
+		"cSpell.words": [
+			"rmtree",
+			"shutil"
+		]
+	}
+}
